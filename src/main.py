@@ -2,6 +2,7 @@
 # Created: 12 March,2020, 7:06 PM
 # Email: aqeel.anwar@gatech.edu
 
+import random
 from tkinter import *
 import numpy as np
 
@@ -218,9 +219,11 @@ class Tic_Tac_Toe():
                     self.player_X_turns = not self.player_X_turns
                 
                 logical_position = self.RL_agent_turn()
-                self.draw_O(logical_position)
-                self.board_status[logical_position[0]][logical_position[1]] = 1
-                self.player_X_turns = not self.player_X_turns
+                if logical_position is not None and not self.is_grid_occupied(logical_position):
+                    # Draw O only if the position is vacant
+                    self.draw_O(logical_position)
+                    self.board_status[logical_position[0]][logical_position[1]] = 1
+                    self.player_X_turns = not self.player_X_turns
             # else:
             #     if not self.is_grid_occupied(logical_position):
             #         self.draw_O(logical_position)
@@ -260,6 +263,9 @@ class Tic_Tac_Toe():
         # Check vacant cells in the board
         vacant_cells = np.argwhere(self.board_status == 0)
         
+        if len(vacant_cells) == 0:
+            return None  # No vacant cells available
+        
         # Convert string to state list with proper int values
         state_list = []
         i = 0
@@ -270,6 +276,8 @@ class Tic_Tac_Toe():
             else:
                 state_list.append(int(current_state[i]))
                 i += 1
+            
+        next_possible_move_states= []
 
         # Generate new states for each possible move
         for row, col in vacant_cells:
@@ -277,11 +285,23 @@ class Tic_Tac_Toe():
             pos = row * 3 + col
             new_state[pos] = 1
             new_state_str = ''.join(str(x) for x in new_state)
-            
+
+            # Add the new state to the list of next move states
+            next_possible_move_states.append([[row, col], new_state_str])
+
             # Update the value function if the new state is not already present
             if new_state_str not in V:
                 V[new_state_str] = 0.5
         
+        # Choose a random move from the next possible states
+        if random.random() < epsilon:
+            # Explore: choose a random move
+            chosen_move = random.choice(next_possible_move_states)
+        else:
+            # Exploit: choose the move with the highest value
+            chosen_move = max(next_possible_move_states, key=lambda x: V[x[1]])
+
+        return np.array(chosen_move[0])
 
 
 

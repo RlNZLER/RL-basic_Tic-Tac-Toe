@@ -200,9 +200,6 @@ class Tic_Tac_Toe():
         return gameover
 
 
-
-
-
     def click(self, event):
         grid_position = [event.x, event.y]
         logical_position = self.convert_grid_to_logical_position(grid_position)
@@ -228,6 +225,22 @@ class Tic_Tac_Toe():
             self.play_again()
             self.reset_board = False
 
+
+    # ------------------------------------------------------------------
+    # RL Agent Functions:
+    # The modules required to carry out RL Agent logic
+    # ------------------------------------------------------------------
+
+    # Returns a string representation of the current board state
+    def get_state_string(self):
+        
+        return ''.join(str(int(cell)) for row in self.board_status for cell in row)
+
+
+
+# ------------------------------------------------------------------
+# Main Function:
+# ------------------------------------------------------------------
 
 game_instance = Tic_Tac_Toe()
 game_instance.mainloop()

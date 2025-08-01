@@ -43,6 +43,11 @@ class Tic_Tac_Toe():
         self.O_score = 0
         self.tie_score = 0
 
+        self.V = {}             # state string -> value (0 to 1)
+        self.epsilon = 0.1      # Exploration rate
+        self.alpha = 0.2        # Learning rate
+        self.last_states = []   # To store visited states by the RL agent during a game
+
     def mainloop(self):
         self.window.mainloop()
 

@@ -91,11 +91,11 @@ class Tic_Tac_Toe():
 
         if self.X_wins:
             self.X_score += 1
-            text = 'Winner:\nRL Agent (X)'
+            text = 'Winner:\nHuman (X)'
             color = symbol_X_color
         elif self.O_wins:
             self.O_score += 1
-            text = 'Winner:\nHuman (O)'
+            text = 'Winner:\nRL Agent (O)'
             color = symbol_O_color
         else:
             self.tie_score += 1
@@ -117,9 +117,9 @@ class Tic_Tac_Toe():
         self.canvas.create_text(size_of_board / 2, start_y, font="cmr 30 bold", fill=Green_color,
                                 text=f'Total Games Played: {total_games}')
         self.canvas.create_text(size_of_board / 2, start_y + line_spacing, font="cmr 30 bold", fill=Green_color,
-                                text=f'RL Agent (X): {self.X_score}')
+                                text=f'Human (X): {self.X_score}')
         self.canvas.create_text(size_of_board / 2, start_y + 2 * line_spacing, font="cmr 30 bold", fill=Green_color,
-                                text=f'Human (O)   : {self.O_score}')
+                                text=f'RL Agent (O): {self.O_score}')
         self.canvas.create_text(size_of_board / 2, start_y + 3 * line_spacing, font="cmr 30 bold", fill=Green_color,
                                 text=f'Ties         : {self.tie_score}')
         self.reset_board = True
@@ -129,7 +129,7 @@ class Tic_Tac_Toe():
         #                         text=score_text)
 
         # Show "Play Again" button centered at the bottom
-        self.play_again_button.place(relx=0.5, rely=0.5, anchor="center")
+        self.play_again_button.place(relx=0.5, rely=0.53, anchor="center")
 
     # ------------------------------------------------------------------
     # Logical Functions:

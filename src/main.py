@@ -12,6 +12,12 @@ symbol_X_color = '#EE4035'
 symbol_O_color = '#0492CF'
 Green_color = '#7BC043'
 
+# RL Agent parameters
+V = {}             # state string -> value (0 to 1)
+epsilon = 0.1      # Exploration rate
+alpha = 0.2        # Learning rate
+last_states = []   # To store visited states by the RL agent during a game
+
 
 class Tic_Tac_Toe():
     # ------------------------------------------------------------------
@@ -42,11 +48,6 @@ class Tic_Tac_Toe():
         self.X_score = 0
         self.O_score = 0
         self.tie_score = 0
-
-        self.V = {}             # state string -> value (0 to 1)
-        self.epsilon = 0.1      # Exploration rate
-        self.alpha = 0.2        # Learning rate
-        self.last_states = []   # To store visited states by the RL agent during a game
 
     def mainloop(self):
         self.window.mainloop()
@@ -215,11 +216,16 @@ class Tic_Tac_Toe():
                     self.draw_X(logical_position)
                     self.board_status[logical_position[0]][logical_position[1]] = -1
                     self.player_X_turns = not self.player_X_turns
-            else:
-                if not self.is_grid_occupied(logical_position):
-                    self.draw_O(logical_position)
-                    self.board_status[logical_position[0]][logical_position[1]] = 1
-                    self.player_X_turns = not self.player_X_turns
+                
+                logical_position = self.RL_agent_turn()
+                self.draw_O(logical_position)
+                self.board_status[logical_position[0]][logical_position[1]] = 1
+                self.player_X_turns = not self.player_X_turns
+            # else:
+            #     if not self.is_grid_occupied(logical_position):
+            #         self.draw_O(logical_position)
+            #         self.board_status[logical_position[0]][logical_position[1]] = 1
+            #         self.player_X_turns = not self.player_X_turns
 
             # Check if game is concluded
             if self.is_gameover():
@@ -238,8 +244,44 @@ class Tic_Tac_Toe():
 
     # Returns a string representation of the current board state
     def get_state_string(self):
+        cell_values = ''
+        for row in self.board_status:
+            for i in row:
+                cell_values += str(int(i))
+
+        return cell_values
+        # return ''.join(str(int(cell)) for row in self.board_status for cell in row) 
+
+    # RL Agent's turn to play
+    def RL_agent_turn(self):
+        # Get the current state as a string
+        current_state = self.get_state_string()
+
+        # Check vacant cells in the board
+        vacant_cells = np.argwhere(self.board_status == 0)
         
-        return ''.join(str(int(cell)) for row in self.board_status for cell in row)
+        # Convert string to state list with proper int values
+        state_list = []
+        i = 0
+        while i < len(current_state):
+            if current_state[i] == '-':
+                state_list.append(-int(current_state[i+1]))
+                i += 2
+            else:
+                state_list.append(int(current_state[i]))
+                i += 1
+
+        # Generate new states for each possible move
+        for row, col in vacant_cells:
+            new_state = state_list.copy()
+            pos = row * 3 + col
+            new_state[pos] = 1
+            new_state_str = ''.join(str(x) for x in new_state)
+            
+            # Update the value function if the new state is not already present
+            if new_state_str not in V:
+                V[new_state_str] = 0.5
+        
 
 
 

@@ -228,12 +228,12 @@ class Tic_Tac_Toe():
                     self.board_status[logical_position[0]][logical_position[1]] = -1
                     self.player_X_turns = not self.player_X_turns
                 
-                logical_position = self.RL_agent_turn()
-                if logical_position is not None and not self.is_grid_occupied(logical_position):
-                    # Draw O only if the position is vacant
-                    self.draw_O(logical_position)
-                    self.board_status[logical_position[0]][logical_position[1]] = 1
-                    self.player_X_turns = not self.player_X_turns
+                    logical_position = self.RL_agent_turn()
+                    if logical_position is not None and not self.is_grid_occupied(logical_position):
+                        # Draw O only if the position is vacant
+                        self.draw_O(logical_position)
+                        self.board_status[logical_position[0]][logical_position[1]] = 1
+                        self.player_X_turns = not self.player_X_turns
             # else:
             #     if not self.is_grid_occupied(logical_position):
             #         self.draw_O(logical_position)

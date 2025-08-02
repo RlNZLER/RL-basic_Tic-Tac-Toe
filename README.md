@@ -45,7 +45,9 @@ The RL agent learns **state values** through repeated play using TD updates and 
 - Trained value function is saved to `state_values.txt` after each game.
 - Each line is in the format:  
 
-state_string:value
+For example:
+1-100111-1-1:0.732
+0-110111-1-1:0.481
 
 
 ## 🔮 Future Improvements
@@ -63,9 +65,9 @@ Make sure you have Python 3 and `numpy` installed.
 
 ```bash
 python main.py
+```
 
 Then click on the board to play against the agent!
 
----
 
 Let me know if you'd like it saved as a `README.md` file or included in your project folder automatically.

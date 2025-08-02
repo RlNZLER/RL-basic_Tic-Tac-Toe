@@ -2,6 +2,7 @@
 # Created: 12 March,2020, 7:06 PM
 # Email: aqeel.anwar@gatech.edu
 
+import json
 import random
 from tkinter import *
 import numpy as np
@@ -202,13 +203,16 @@ class Tic_Tac_Toe():
 
         if self.X_wins:
             print('X wins')
-            self.reward = -1
+            self.reward = 0
+            self.update_state_value()
         if self.O_wins:
             print('O wins')
             self.reward = 1
+            self.update_state_value()
         if self.tie:
             print('Its a tie')
-            self.reward = -1
+            self.reward = 0
+            self.update_state_value()
 
         return gameover
 
@@ -242,6 +246,7 @@ class Tic_Tac_Toe():
                 # print('Done')
         else:  # Play Again
             self.canvas.delete("all")
+            self.last_states = []
             self.play_again()
             self.reset_board = False
 
@@ -255,9 +260,13 @@ class Tic_Tac_Toe():
     def get_state_string(self):
         cell_values = ''
         for row in self.board_status:
-            for i in row:
-                cell_values += str(int(i))
-
+            for cell in row:
+                if cell == 1:
+                    cell_values += '1'
+                elif cell == -1:
+                    cell_values += '-'
+                else:
+                    cell_values += '0'
         return cell_values
         # return ''.join(str(int(cell)) for row in self.board_status for cell in row) 
 
@@ -276,6 +285,8 @@ class Tic_Tac_Toe():
 
             new_value = old_value + alpha * (next_value - old_value)
             V[current_state] = new_value
+        
+        self.save_state_values()
 
     # RL Agent's turn to play
     def RL_agent_turn(self):
@@ -290,14 +301,13 @@ class Tic_Tac_Toe():
         
         # Convert string to state list with proper int values
         state_list = []
-        i = 0
-        while i < len(current_state):
-            if current_state[i] == '-':
-                state_list.append(-int(current_state[i+1]))
-                i += 2
+        for c in current_state:
+            if c == '1':
+                state_list.append(1)
+            elif c == '-':
+                state_list.append(-1)
             else:
-                state_list.append(int(current_state[i]))
-                i += 1
+                state_list.append(0)
             
         next_possible_move_states= []
 
@@ -325,8 +335,16 @@ class Tic_Tac_Toe():
 
         self.last_states.append(chosen_move[1])  # Store the state string of the chosen move
         return np.array(chosen_move[0])
+    
+    def save_state_values(self, filename="state_values.txt"):
+        with open(filename, "w") as file:
+            for state, value in V.items():
+                line = f"{state}:{value}\n"
+                file.write(line)
 
-
+    # def save_state_values(self, filename="state_values.json"):
+    #     with open(filename, "w") as f:
+    #         json.dump(V, f)
 
 # ------------------------------------------------------------------
 # Main Function:

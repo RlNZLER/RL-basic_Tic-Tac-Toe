@@ -228,6 +228,7 @@ class Tic_Tac_Toe():
                     self.board_status[logical_position[0]][logical_position[1]] = -1
                     self.player_X_turns = not self.player_X_turns
                 
+                    # RL Agent's turn
                     logical_position = self.RL_agent_turn()
                     if logical_position is not None and not self.is_grid_occupied(logical_position):
                         # Draw O only if the position is vacant
@@ -264,7 +265,7 @@ class Tic_Tac_Toe():
                 if cell == 1:
                     cell_values += '1'
                 elif cell == -1:
-                    cell_values += '-'
+                    cell_values += '-1'
                 else:
                     cell_values += '0'
         return cell_values
@@ -301,15 +302,16 @@ class Tic_Tac_Toe():
         
         # Convert string to state list with proper int values
         state_list = []
-        for c in current_state:
-            if c == '1':
-                state_list.append(1)
-            elif c == '-':
+        i = 0
+        while i < len(current_state):
+            if current_state[i] == '-':
                 state_list.append(-1)
+                i += 2  # Skip the next '1'
             else:
-                state_list.append(0)
-            
-        next_possible_move_states= []
+                state_list.append(int(current_state[i]))
+                i += 1
+
+        next_possible_move_states = []
 
         # Generate new states for each possible move
         for row, col in vacant_cells:
@@ -330,7 +332,7 @@ class Tic_Tac_Toe():
             # Explore: choose a random move
             chosen_move = random.choice(next_possible_move_states)
         else:
-            # Exploit: choose the move with the highest value
+            # Exploit: choose the move with the highest state value
             chosen_move = max(next_possible_move_states, key=lambda x: V[x[1]])
 
         self.last_states.append(chosen_move[1])  # Store the state string of the chosen move

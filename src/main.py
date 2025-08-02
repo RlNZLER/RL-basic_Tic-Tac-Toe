@@ -39,6 +39,9 @@ class Tic_Tac_Toe():
         self.player_X_turns = True
         self.board_status = np.zeros(shape=(3, 3))
 
+        self.last_states = []  # To store visited states by the RL agent during a game
+        self.reward = 0
+
         self.player_X_starts = True
         self.reset_board = False
         self.gameover = False
@@ -199,10 +202,13 @@ class Tic_Tac_Toe():
 
         if self.X_wins:
             print('X wins')
+            self.reward = -1
         if self.O_wins:
             print('O wins')
+            self.reward = 1
         if self.tie:
             print('Its a tie')
+            self.reward = -1
 
         return gameover
 
@@ -255,6 +261,22 @@ class Tic_Tac_Toe():
         return cell_values
         # return ''.join(str(int(cell)) for row in self.board_status for cell in row) 
 
+    def update_state_value(self):
+        V[self.last_states[-1]] = self.reward
+        new_value = 0
+        old_value = 0
+        next_value = 0
+
+        for i in range(len(self.last_states) - 2, -1, -1):
+            current_state = self.last_states[i]
+            next_state = self.last_states[i + 1]
+
+            old_value = V[current_state]
+            next_value = V[next_state]
+
+            new_value = old_value + alpha * (next_value - old_value)
+            V[current_state] = new_value
+
     # RL Agent's turn to play
     def RL_agent_turn(self):
         # Get the current state as a string
@@ -301,6 +323,7 @@ class Tic_Tac_Toe():
             # Exploit: choose the move with the highest value
             chosen_move = max(next_possible_move_states, key=lambda x: V[x[1]])
 
+        self.last_states.append(chosen_move[1])  # Store the state string of the chosen move
         return np.array(chosen_move[0])
 
 

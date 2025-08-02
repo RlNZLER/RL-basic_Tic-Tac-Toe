@@ -46,8 +46,8 @@ The RL agent learns **state values** through repeated play using TD updates and 
 - Each line is in the format:  
 
 For example:
-1-100111-1-1:0.732
-0-110111-1-1:0.481
+`1-100111-1-1:0.732`
+`0-110111-1-1:0.481`
 
 
 ## 🔮 Future Improvements

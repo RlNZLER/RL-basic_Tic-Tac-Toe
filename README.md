@@ -16,9 +16,9 @@ The RL agent learns **state values** through repeated play using TD updates and 
 - **Tabular Value Function (V)**: The agent estimates how good a state is (in terms of winning chances) by assigning a value between 0 and 1.
 - **Temporal-Difference Learning (TD(0))**: After each game, the agent updates its state value estimates using the TD(0) rule:
 
-$
+$$
 V(s_t) \leftarrow V(s_t) + \alpha [V(s_{t+1}) - V(s_t)]
-$
+$$
 
 - **ε-greedy Action Selection**: With probability ε (e.g., 0.1), the agent explores a random action; otherwise, it exploits the best-known action.
 
